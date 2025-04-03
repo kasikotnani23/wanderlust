@@ -1,0 +1,124 @@
+
+## **1. Document the Steps in a `README.md` File**  
+You should create a `README.md` file in your **GitHub repository** (`wanderlust`). This file should explain:  
+- The **project structure** (backend, frontend, database)  
+- **Steps to deploy** the application on an Ubuntu server  
+- Any **configurations required** (e.g., `.env` files)  
+- How to run it using `pm2`  
+
+Here’s a **sample `README.md`** for your project:  
+
+---
+
+### **Wanderlust - Three-Tier Application Deployment Guide**  
+
+This guide explains how to deploy the **Wanderlust** application (a three-tier architecture) on an **Ubuntu server** using **MongoDB, Node.js (Express), React, and PM2**.
+
+## **1. Clone the Repository**
+```sh
+git clone https://github.com/kasikotnani23/wanderlust.git
+cd wanderlust
+```
+
+---
+
+## **2. Install Dependencies**
+
+### **Backend Setup**
+```sh
+cd backend
+npm install
+cp .env.sample .env  # Configure environment variables
+```
+
+### **Frontend Setup**
+```sh
+cd ../frontend
+npm install
+cp .env.sample .env.local  # Configure frontend environment variables
+```
+
+---
+
+## **3. Install MongoDB**
+```sh
+sudo apt-get install gnupg curl
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+sudo systemctl start mongod
+```
+
+### **Import Sample Data**
+```sh
+cd backend
+mongoimport --db wanderlust --collection posts --file ./data/sample_posts.json --jsonArray
+```
+
+---
+
+## **4. Start the Backend**
+```sh
+cd backend
+npm start  # OR run in background using PM2
+```
+
+To keep the backend running:
+```sh
+npm install -g pm2
+pm2 start server.js --name wanderlust-backend
+pm2 save
+pm2 startup
+```
+
+---
+
+## **5. Start the Frontend**
+```sh
+cd frontend
+npm run dev -- --host  # OR run in background
+```
+
+To run it in the background:
+```sh
+nohup npm run dev -- --host &
+```
+
+---
+
+## **6. Deployment Commands Recap**
+```sh
+# Start backend with PM2
+pm2 start backend/server.js --name wanderlust-backend
+pm2 save
+pm2 startup
+
+# Start frontend in background
+nohup npm run dev -- --host &
+```
+
+To check running services:
+```sh
+pm2 list
+```
+
+To stop services:
+```sh
+pm2 stop wanderlust-backend
+```
+
+---
+
+## **7. Access the Application**
+- **Backend:** `http://<your-server-ip>:5000`  
+- **Frontend:** `http://<your-server-ip>:5173` (or the port in `.env.local`)  
+- **MongoDB:** Running locally on `mongodb://127.0.0.1/wanderlust`  
+
+---
+
+## **8. Troubleshooting**
+- If the backend fails to connect to Redis, check the `.env` file for a valid **Redis URL**.  
+- Use `pm2 logs wanderlust-backend` to check backend logs.  
+- Use `tail -f nohup.out` to see frontend logs.  
+
