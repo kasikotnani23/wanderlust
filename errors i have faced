@@ -1,0 +1,4 @@
+here i have changed .env.sample file in backend and front end with my local host ip followed by the port number then only when we try to deploy those containers it will work using the 
+docker-compose.yaml file 
+while doing the deployment of this application i have faced tiny errors like these ip address are missmatched and have to modify the 
+.env.sample files couple of times and chcek the docker logs and have to insert the data from backend to mongodb 
