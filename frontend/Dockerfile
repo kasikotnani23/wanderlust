@@ -7,6 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 # install the dependencies
 RUN npm install 
+#Need to Run the Test cases 
+RUN npm run test
 # copy the rest of the application code to the working directory
 COPY . . 
 
