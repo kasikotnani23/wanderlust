@@ -26,7 +26,7 @@ services:
       - "5173:5173"
   
   redis:
-    image: redis:7.8.0-alpine
+    image: redis:alpine
     restart: unless-stopped
     depends_on:
       - mongo
