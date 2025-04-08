@@ -7,10 +7,11 @@ WORKDIR /app
 COPY package*.json ./
 # install the dependencies
 RUN npm install
+# copy the rest of the application code to the working directory
+COPY . .
 #Npm Run the tests
 RUN npm run test
-# copy the rest of the application code to the working directory
-COPY . . 
+ 
 # stage 2: run the app
 
 # use a smaller image for the final stage
